@@ -29,7 +29,7 @@
             --amber-lt: #fef3c7;
             --red: #b91c1c;
             --red-lt: #fee2e2;
-            --sidebar: #0f172a;
+            --sb-width: 260px;
         }
 
         body {
@@ -40,10 +40,13 @@
             min-height: 100vh;
         }
 
-        /* SIDEBAR */
+        /* ══════════════════════════════
+           SIDEBAR — white background
+        ══════════════════════════════ */
         .sidebar {
-            width: 220px;
-            background: var(--sidebar);
+            width: var(--sb-width);
+            background: #ffffff;
+            border-right: 1px solid #e8edf5;
             display: flex;
             flex-direction: column;
             position: fixed;
@@ -53,122 +56,341 @@
             z-index: 100;
         }
 
+            /* Top rainbow accent stripe */
+            .sidebar::before {
+                content: '';
+                display: block;
+                height: 4px;
+                flex-shrink: 0;
+                background: linear-gradient(90deg, #ff6b6b, #ff9a3c, #ffd93d, #ff6bcd, #6bcbff);
+            }
+
+        /* ── Brand ── */
         .sb-brand {
-            padding: 24px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 18px 20px 16px;
+            border-bottom: 1px solid #f0f4fa;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
         }
 
-            .sb-brand .mark {
-                width: 36px;
-                height: 36px;
-                background: var(--blue);
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #fff;
-                font-weight: 900;
-                font-size: 12px;
-                margin-bottom: 10px;
-                letter-spacing: -0.5px;
-            }
-
-            .sb-brand .name {
-                color: #fff;
-                font-size: 13px;
-                font-weight: 700;
-            }
-
-            .sb-brand .sub {
-                color: rgba(255,255,255,0.4);
-                font-size: 10px;
-                margin-top: 2px;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            }
-
-        .sb-nav {
-            padding: 16px 0;
-            flex: 1;
+        .sb-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ff6b6b, #ff9a3c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 900;
+            color: #fff;
+            flex-shrink: 0;
         }
 
-        .sb-section {
-            padding: 0 12px 4px;
-            font-size: 9px;
+        .sb-brand-text .name {
+            color: #0f172a;
+            font-size: 14px;
             font-weight: 700;
-            color: rgba(255,255,255,0.25);
+        }
+
+        .sb-brand-text .sub {
+            color: #94a3b8;
+            font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 1.2px;
-            margin-top: 16px;
+            margin-top: 2px;
         }
 
+        /* ── Nav ── */
+        .sb-nav {
+            flex: 1;
+            padding: 12px 0;
+            overflow-y: auto;
+        }
+
+            .sb-nav::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            .sb-nav::-webkit-scrollbar-thumb {
+                background: #e2e8f0;
+                border-radius: 4px;
+            }
+
+        .sb-section {
+            padding: 14px 20px 5px;
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* ── Nav links ── */
         .sb-link {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 9px 12px;
-            margin: 1px 8px;
-            border-radius: 7px;
-            color: rgba(255,255,255,0.55);
-            font-size: 13px;
+            gap: 11px;
+            padding: 9px 14px 9px 18px;
+            margin: 2px 10px;
+            border-radius: 9px;
+            color: #475569;
+            font-size: 13.5px;
+            font-weight: 500;
             text-decoration: none;
             transition: background .15s, color .15s;
+            position: relative;
         }
 
             .sb-link:hover {
-                background: rgba(255,255,255,0.07);
-                color: rgba(255,255,255,0.9);
+                background: #f8fafc;
+                color: #0f172a;
             }
 
-            .sb-link.active {
-                background: var(--blue);
+            /* Active left accent bar */
+            .sb-link.active::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 6px;
+                bottom: 6px;
+                width: 3px;
+                border-radius: 0 3px 3px 0;
+            }
+
+            /* Red — Dashboard */
+            .sb-link.cl-red:hover {
+                background: #fff1f1;
+                color: #e03e3e;
+            }
+
+            .sb-link.cl-red.active {
+                background: #fff1f1;
+                color: #e03e3e;
+            }
+
+                .sb-link.cl-red.active::before {
+                    background: #ff6b6b;
+                }
+
+            .sb-link.cl-red .sb-ic {
+                background: #fff1f1;
+                color: #ff6b6b;
+            }
+
+            .sb-link.cl-red.active .sb-ic {
+                background: #ff6b6b;
                 color: #fff;
             }
 
-            .sb-link .ic {
-                width: 18px;
-                text-align: center;
-                font-size: 15px;
+            /* Orange — Add Purchase */
+            .sb-link.cl-orange:hover {
+                background: #fff4ec;
+                color: #c4650a;
             }
 
-        .sb-foot {
-            padding: 16px 12px;
-            border-top: 1px solid rgba(255,255,255,0.08);
+            .sb-link.cl-orange.active {
+                background: #fff4ec;
+                color: #c4650a;
+            }
+
+                .sb-link.cl-orange.active::before {
+                    background: #ff9a3c;
+                }
+
+            .sb-link.cl-orange .sb-ic {
+                background: #fff4ec;
+                color: #ff9a3c;
+            }
+
+            .sb-link.cl-orange.active .sb-ic {
+                background: #ff9a3c;
+                color: #fff;
+            }
+
+            /* Yellow — Purchase Records */
+            .sb-link.cl-yellow:hover {
+                background: #fffbec;
+                color: #9a7010;
+            }
+
+            .sb-link.cl-yellow.active {
+                background: #fffbec;
+                color: #9a7010;
+            }
+
+                .sb-link.cl-yellow.active::before {
+                    background: #ffd93d;
+                }
+
+            .sb-link.cl-yellow .sb-ic {
+                background: #fffbec;
+                color: #e6a817;
+            }
+
+            .sb-link.cl-yellow.active .sb-ic {
+                background: #ffd93d;
+                color: #fff;
+            }
+
+            /* Pink — (spare) */
+            .sb-link.cl-pink:hover {
+                background: #fef0f8;
+                color: #b5178a;
+            }
+
+            .sb-link.cl-pink.active {
+                background: #fef0f8;
+                color: #b5178a;
+            }
+
+                .sb-link.cl-pink.active::before {
+                    background: #ff6bcd;
+                }
+
+            .sb-link.cl-pink .sb-ic {
+                background: #fef0f8;
+                color: #ff6bcd;
+            }
+
+            .sb-link.cl-pink.active .sb-ic {
+                background: #ff6bcd;
+                color: #fff;
+            }
+
+            /* Sky — Material Requests */
+            .sb-link.cl-sky:hover {
+                background: #ecf7ff;
+                color: #1277b0;
+            }
+
+            .sb-link.cl-sky.active {
+                background: #ecf7ff;
+                color: #1277b0;
+            }
+
+                .sb-link.cl-sky.active::before {
+                    background: #6bcbff;
+                }
+
+            .sb-link.cl-sky .sb-ic {
+                background: #ecf7ff;
+                color: #38a8e0;
+            }
+
+            .sb-link.cl-sky.active .sb-ic {
+                background: #6bcbff;
+                color: #fff;
+            }
+
+        /* Icon box */
+        .sb-ic {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+            transition: background .15s, color .15s;
         }
 
-        .sb-user {
-            color: rgba(255,255,255,0.55);
-            font-size: 11px;
+        .sb-link-label {
+            flex: 1;
+        }
+
+        /* Pending badge */
+        .sb-badge {
+            background: #ff6b6b;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            line-height: 1.4;
+        }
+
+        /* Divider */
+        .sb-divider {
+            height: 1px;
+            background: #f0f4fa;
+            margin: 8px 18px;
+        }
+
+        /* ── Footer ── */
+        .sb-foot {
+            flex-shrink: 0;
+            padding: 14px 16px;
+            border-top: 1px solid #f0f4fa;
+        }
+
+        .sb-user-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: #f8fafc;
+            border: 1px solid #f0f4fa;
+            border-radius: 10px;
             margin-bottom: 10px;
         }
 
-            .sb-user strong {
-                color: #fff;
-                display: block;
-                font-size: 12px;
-                margin-bottom: 1px;
-            }
+        .sb-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6bcd, #6bcbff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .sb-user-info .emp {
+            color: #0f172a;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .sb-user-info .role {
+            color: #94a3b8;
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
 
         .btn-so {
             width: 100%;
-            padding: 8px;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 6px;
-            color: rgba(255,255,255,0.7);
-            font-size: 12px;
+            padding: 9px;
+            background: #fff1f1;
+            border: 1px solid #ffd0d0;
+            border-radius: 8px;
+            color: #e03e3e;
+            font-size: 12.5px;
+            font-weight: 600;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
             transition: background .15s;
         }
 
             .btn-so:hover {
-                background: rgba(255,255,255,0.14);
-                color: #fff;
+                background: #ffe4e4;
             }
 
-        /* MAIN */
+        /* ══════════════════════════════
+           MAIN
+        ══════════════════════════════ */
         .main {
-            margin-left: 220px;
+            margin-left: var(--sb-width);
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -181,31 +403,61 @@
 
     <div class="sidebar">
         <div class="sb-brand">
-            <div class="mark">NT</div>
-            <div class="name">NTPC Material</div>
-            <div class="sub">Admin Portal</div>
+            <div class="sb-logo">NT</div>
+            <div class="sb-brand-text">
+                <div class="name">NTPC Material</div>
+                <div class="sub">Admin Portal</div>
+            </div>
         </div>
+
         <div class="sb-nav">
             <div class="sb-section">Main</div>
-            <a class="sb-link @(ViewBag.Active == "Dashboard" ? "active" : "")" href="@Url.Action("AdminDashboard","Dashboard")">
-                <span class="ic">&#9632;</span> Dashboard
+
+            <a class="sb-link cl-red @(ViewBag.Active == "Dashboard" ? "active" : "")"
+               href="@Url.Action("AdminDashboard","Dashboard")">
+                <span class="sb-ic">&#9632;</span>
+                <span class="sb-link-label">Dashboard</span>
             </a>
-            <a class="sb-link @(ViewBag.Active == "AddPurchase" ? "active" : "")" href="@Url.Action("Add","MaterialPurchase")">
-                <span class="ic">&#10133;</span> Add Purchase Order
+
+            <a class="sb-link cl-orange @(ViewBag.Active == "AddPurchase" ? "active" : "")"
+               href="@Url.Action("Add","MaterialPurchase")">
+                <span class="sb-ic">&#10133;</span>
+                <span class="sb-link-label">Add Purchase Order</span>
             </a>
-            <a class="sb-link @(ViewBag.Active == "PurchaseRecords" ? "active" : "")" href="@Url.Action("Records","MaterialPurchase")">
-                <span class="ic">&#128203;</span> Purchase Records
+
+            <a class="sb-link cl-yellow @(ViewBag.Active == "PurchaseRecords" ? "active" : "")"
+               href="@Url.Action("Records","MaterialPurchase")">
+                <span class="sb-ic">&#128203;</span>
+                <span class="sb-link-label">Purchase Records</span>
+            </a>
+
+            <div class="sb-divider"></div>
+            <div class="sb-section">Employee Requests</div>
+
+            <a class="sb-link cl-sky @(ViewBag.Active == "AllRequests" ? "active" : "")"
+               href="@Url.Action("AllRequests","MaterialRequest")">
+                <span class="sb-ic">&#128228;</span>
+                <span class="sb-link-label">Material Requests</span>
+                @if ((ViewBag.PendingCount ?? 0) > 0)
+                {
+                    <span class="sb-badge">@ViewBag.PendingCount</span>
+                }
             </a>
         </div>
+
         <div class="sb-foot">
-            <div class="sb-user">
-                <strong>@empNo</strong>
-                Administrator
+            <div class="sb-user-card">
+                <div class="sb-avatar">@empNo.Substring(0, Math.Min(2, empNo.Length)).ToUpper()</div>
+                <div class="sb-user-info">
+                    <div class="emp">@empNo</div>
+                    <div class="role">Administrator</div>
+                </div>
             </div>
-            <form action="@Url.Action("Logout","Account")" method="post">
+            @using (Html.BeginForm("Logout", "Account", FormMethod.Post))
+            {
                 @Html.AntiForgeryToken()
-                <button type="submit" class="btn-so">Sign Out</button>
-            </form>
+                <button type="submit" class="btn-so">&#128274; Sign Out</button>
+            }
         </div>
     </div>
 

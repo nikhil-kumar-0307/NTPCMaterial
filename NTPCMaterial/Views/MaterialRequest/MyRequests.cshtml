@@ -1,0 +1,395 @@
+﻿@{
+    Layout = null;
+    string empNo = Session["EmployeeNumber"]?.ToString() ?? "User";
+}
+@model IEnumerable<NTPCMaterial.Models.MaterialRequest>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Requests — NTPC Material</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f4fa;
+            color: #0a1628;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 240px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #064e3b 0%, #065f46 100%);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+        }
+
+        .sidebar-brand {
+            padding: 28px 24px 24px;
+            border-bottom: 1px solid rgba(255,255,255,.12);
+        }
+
+            .sidebar-brand .logo {
+                width: 44px;
+                height: 44px;
+                background: #fff;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px;
+                font-weight: 800;
+                color: #064e3b;
+                margin-bottom: 12px;
+            }
+
+            .sidebar-brand h2 {
+                color: #fff;
+                font-size: 14px;
+                font-weight: 700;
+                line-height: 1.4;
+            }
+
+            .sidebar-brand p {
+                color: rgba(255,255,255,.55);
+                font-size: 11px;
+                margin-top: 3px;
+            }
+
+        .nav-section {
+            padding: 20px 0 8px;
+        }
+
+        .nav-label {
+            padding: 0 20px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(255,255,255,.4);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 20px;
+            color: rgba(255,255,255,.75);
+            font-size: 13.5px;
+            cursor: pointer;
+            transition: background .15s;
+            text-decoration: none;
+        }
+
+            .nav-item:hover, .nav-item.active {
+                background: rgba(255,255,255,.12);
+                color: #fff;
+            }
+
+            .nav-item .icon {
+                font-size: 17px;
+                width: 22px;
+                text-align: center;
+            }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,.12);
+        }
+
+            .sidebar-footer .emp-info {
+                color: rgba(255,255,255,.7);
+                font-size: 12px;
+                margin-bottom: 12px;
+            }
+
+                .sidebar-footer .emp-info strong {
+                    color: #fff;
+                    display: block;
+                    font-size: 13px;
+                }
+
+        .btn-logout {
+            width: 100%;
+            padding: 9px;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 7px;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+            .btn-logout:hover {
+                background: rgba(255,255,255,.22);
+            }
+
+        /* ── Main ── */
+        .main {
+            margin-left: 240px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: #fff;
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e7f0;
+        }
+
+            .topbar h1 {
+                font-size: 20px;
+                font-weight: 700;
+            }
+
+        .badge-user {
+            background: #dcfce7;
+            color: #16a34a;
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        /* ── Alert ── */
+        .alert-success {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 12px 18px;
+            margin-bottom: 24px;
+            font-size: 13.5px;
+        }
+
+        /* ── Card ── */
+        .card-box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,53,128,.07);
+            overflow: hidden;
+        }
+
+        .card-box-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #e8ecf4;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .card-box-header h3 {
+                font-size: 15px;
+                font-weight: 700;
+            }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            background: #064e3b;
+            color: #fff;
+            border-radius: 7px;
+            font-size: 12.5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background .15s;
+        }
+
+            .back-btn:hover {
+                background: #065f46;
+            }
+
+        /* ── Table ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 12px 18px;
+            background: #f8faff;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #6b7a99;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        tbody td {
+            padding: 13px 18px;
+            font-size: 13.5px;
+            color: #374060;
+            border-top: 1px solid #f0f4fa;
+        }
+
+        tbody tr:hover {
+            background: #f8faff;
+        }
+
+        /* ── Status badges ── */
+        .status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+            .status.pending {
+                background: #e0e7ff;
+                color: #4338ca;
+            }
+
+            .status.approved {
+                background: #dcfce7;
+                color: #16a34a;
+            }
+
+            .status.rejected {
+                background: #fee2e2;
+                color: #dc2626;
+            }
+
+        /* ── Empty state ── */
+        .empty-state {
+            padding: 60px 24px;
+            text-align: center;
+            color: #9aa3bb;
+        }
+
+            .empty-state .icon {
+                font-size: 48px;
+                margin-bottom: 12px;
+            }
+
+            .empty-state p {
+                font-size: 14px;
+                margin-bottom: 18px;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <div class="logo">NTPC</div>
+            <h2>Material Management</h2>
+            <p>Employee Portal</p>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Main</div>
+            <a class="nav-item" href="@Url.Action("UserDashboard","Dashboard")">
+                <span class="icon">&#128202;</span> Dashboard
+            </a>
+            <a class="nav-item active" href="@Url.Action("MyRequests","MaterialRequest")">
+                <span class="icon">&#128203;</span> My Requests
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <div class="emp-info">
+                <strong>@empNo</strong>Employee
+            </div>
+            <form action="@Url.Action("Logout","Account")" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn-logout">&#128274; Sign Out</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+        <div class="topbar">
+            <h1>My Material Requests</h1>
+            <span class="badge-user">&#9679; Employee — @empNo</span>
+        </div>
+
+        <div class="content">
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert-success">&#10003; @TempData["Success"]</div>
+            }
+
+            <div class="card-box">
+                <div class="card-box-header">
+                    <h3>&#128203; All My Requests (@Model.Count())</h3>
+                    <a href="@Url.Action("UserDashboard","Dashboard")" class="back-btn">&#8592; Back to Dashboard</a>
+                </div>
+
+                @if (Model.Any())
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Request No.</th>
+                                <th>Material Code</th>
+                                <th>Material Name</th>
+                                <th>Qty</th>
+                                <th>Department</th>
+                                <th>Required By</th>
+                                <th>Submitted On</th>
+                                <th>Status</th>
+                                <th>Review Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in Model)
+                            {
+                                <tr>
+                                    <td><strong>@r.RequestNumber</strong></td>
+                                    <td>@r.MaterialCode</td>
+                                    <td>@r.MaterialName</td>
+                                    <td>@r.QuantityRequested</td>
+                                    <td>@r.Department</td>
+                                    <td>@r.RequiredByDate.ToString("dd MMM yyyy")</td>
+                                    <td>@r.CreatedAt.ToString("dd MMM yyyy")</td>
+                                    <td><span class="status @r.Status.ToLower()">@r.Status</span></td>
+                                    <td style="color:#6b7a99;font-size:12.5px;">
+                                        @(string.IsNullOrEmpty(r.ReviewRemarks) ? "—" : r.ReviewRemarks)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <div class="icon">&#128203;</div>
+                        <p>You haven't submitted any material requests yet.</p>
+                        <a href="@Url.Action("UserDashboard","Dashboard")" class="back-btn">&#43; Raise a Request</a>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

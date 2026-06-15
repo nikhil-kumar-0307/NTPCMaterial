@@ -11,15 +11,22 @@ namespace NTPCMaterial.Controllers
     {
         private readonly AppDbContext _db = new AppDbContext();
 
+        // GET: /Account/Login
         [HttpGet]
         public ActionResult Login()
         {
+           
             if (User.Identity.IsAuthenticated)
-                return RedirectToAction("Index", "Dashboard");
-
+            {
+                if (Session["Role"]?.ToString() == "Admin")
+                    return RedirectToAction("AdminDashboard", "Dashboard");
+                else
+                    return RedirectToAction("UserDashboard", "Dashboard");
+            }
             return View();
         }
 
+        // POST: /Account/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(EmployeeDto dto)
@@ -28,7 +35,6 @@ namespace NTPCMaterial.Controllers
                 return View(dto);
 
             string hashed = HashPassword(dto.Password);
-
             var employee = _db.Employees.FirstOrDefault(e =>
                 e.EmployeeNumber == dto.EmployeeNumber &&
                 e.PasswordHash == hashed);
@@ -42,20 +48,20 @@ namespace NTPCMaterial.Controllers
             employee.LastLoginAt = DateTime.Now;
             _db.SaveChanges();
 
-            // Store role in session for dashboard use
             Session["EmployeeNumber"] = employee.EmployeeNumber;
             Session["Role"] = employee.Role;
 
             FormsAuthentication.SetAuthCookie(employee.EmployeeNumber, dto.RememberMe);
 
-            // ── Redirect based on Role ──
             if (employee.Role == "Admin")
                 return RedirectToAction("AdminDashboard", "Dashboard");
             else
                 return RedirectToAction("UserDashboard", "Dashboard");
         }
 
-        [HttpGet]
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();

@@ -19,6 +19,7 @@ namespace NTPCMaterial.Data
 
         public DbSet<Employee> Employees { get; set; }
         public DbSet<MaterialPurchase> MaterialPurchases { get; set; }
+        public DbSet<MaterialRequest> MaterialRequests { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
