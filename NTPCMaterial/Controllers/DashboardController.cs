@@ -16,27 +16,23 @@ namespace NTPCMaterial.Controllers
             if (Session["Role"]?.ToString() != "Admin")
                 return RedirectToAction("UserDashboard");
 
-            // ── Purchase stats ──
             ViewBag.TotalOrders = _db.MaterialPurchases.Count();
-            ViewBag.TotalAmount = _db.MaterialPurchases.Sum(p => (decimal?)p.Amount) ?? 0;
+            ViewBag.TotalQuantity = _db.MaterialPurchases.Sum(p => (int?)p.Quantity) ?? 0;  // changed
             ViewBag.TotalEmployees = _db.Employees.Count();
             ViewBag.RecentOrders = _db.MaterialPurchases
                                         .OrderByDescending(p => p.CreatedAt)
                                         .Take(8)
                                         .ToList();
 
-            // ── Request stats ──
             ViewBag.PendingCount = _db.MaterialRequests.Count(r => r.Status == "Pending");
             ViewBag.ApprovedCount = _db.MaterialRequests.Count(r => r.Status == "Approved");
             ViewBag.RejectedCount = _db.MaterialRequests.Count(r => r.Status == "Rejected");
 
-            // ── Pending requests list (shown in dashboard table) ──
             ViewBag.PendingRequests = _db.MaterialRequests
                                          .Where(r => r.Status == "Pending")
                                          .OrderByDescending(r => r.CreatedAt)
                                          .Take(10)
                                          .ToList();
-
             return View();
         }
 

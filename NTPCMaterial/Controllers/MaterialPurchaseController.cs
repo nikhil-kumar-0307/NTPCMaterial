@@ -16,7 +16,6 @@ namespace NTPCMaterial.Controllers
             return Session["Role"]?.ToString() == "Admin";
         }
 
-        // GET: /MaterialPurchase/Records  -> full list (sidebar "Purchase Records")
         public ActionResult Records()
         {
             if (!IsAdmin())
@@ -26,7 +25,6 @@ namespace NTPCMaterial.Controllers
             return View(records);
         }
 
-        // GET: /MaterialPurchase/Add  -> empty form
         [HttpGet]
         public ActionResult Add()
         {
@@ -36,7 +34,6 @@ namespace NTPCMaterial.Controllers
             return View(new MaterialPurchaseDto());
         }
 
-        // POST: /MaterialPurchase/Add -> save new record
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Add(MaterialPurchaseDto dto)
@@ -52,7 +49,7 @@ namespace NTPCMaterial.Controllers
                 PONumber = dto.PONumber,
                 MaterialCode = dto.MaterialCode,
                 MaterialName = dto.MaterialName,
-                Amount = dto.Amount,
+                Quantity = dto.Quantity,
                 PurchaseDate = dto.PurchaseDate,
                 CreatedAt = DateTime.Now,
                 AddedBy = Session["EmployeeNumber"]?.ToString()
@@ -65,7 +62,6 @@ namespace NTPCMaterial.Controllers
             return RedirectToAction("Records");
         }
 
-        // GET: /MaterialPurchase/Edit/5
         [HttpGet]
         public ActionResult Edit(int id)
         {
@@ -80,14 +76,13 @@ namespace NTPCMaterial.Controllers
                 PONumber = record.PONumber,
                 MaterialCode = record.MaterialCode,
                 MaterialName = record.MaterialName,
-                Amount = record.Amount,
+                Quantity = record.Quantity,
                 PurchaseDate = record.PurchaseDate
             };
             ViewBag.Id = record.Id;
             return View(dto);
         }
 
-        // POST: /MaterialPurchase/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, MaterialPurchaseDto dto)
@@ -107,7 +102,7 @@ namespace NTPCMaterial.Controllers
             record.PONumber = dto.PONumber;
             record.MaterialCode = dto.MaterialCode;
             record.MaterialName = dto.MaterialName;
-            record.Amount = dto.Amount;
+            record.Quantity = dto.Quantity;
             record.PurchaseDate = dto.PurchaseDate;
 
             _db.SaveChanges();
@@ -115,7 +110,6 @@ namespace NTPCMaterial.Controllers
             return RedirectToAction("Records");
         }
 
-        // POST: /MaterialPurchase/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id)

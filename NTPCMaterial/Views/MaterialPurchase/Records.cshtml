@@ -245,8 +245,8 @@
             <div class="sc-val">@Model.Count</div>
         </div>
         <div class="sc">
-            <div class="sc-label">Total Amount Spent</div>
-            <div class="sc-val">&#8377;@Model.Sum(p => p.Amount).ToString("N0")</div>
+            <div class="sc-label">Total Quantity</div>
+            <div class="sc-val">@Model.Sum(p => p.Quantity).ToString("N0")</div>
         </div>
     </div>
 
@@ -270,7 +270,7 @@
                         <th>PO Number</th>
                         <th>Material Code</th>
                         <th>Material Name</th>
-                        <th>Amount</th>
+                        <th>Quantity</th>
                         <th>Purchase Date</th>
                         <th>Added By</th>
                         <th>Action</th>
@@ -283,7 +283,7 @@
                             <td><strong>@po.PONumber</strong></td>
                             <td>@po.MaterialCode</td>
                             <td>@po.MaterialName</td>
-                            <td class="amt">&#8377;@po.Amount.ToString("N0")</td>
+                            <td class="amt">@po.Quantity.ToString("N0")</td>
                             <td>@po.PurchaseDate.ToString("dd MMM yyyy")</td>
                             <td>@po.AddedBy</td>
                             <td>

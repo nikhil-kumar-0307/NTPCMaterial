@@ -4,7 +4,7 @@
     ViewBag.Active = "Dashboard";
 
     int totalOrders = ViewBag.TotalOrders ?? 0;
-    decimal totalAmount = ViewBag.TotalAmount ?? 0;
+    int totalQuantity = ViewBag.TotalQuantity ?? 0;
     int totalEmployees = ViewBag.TotalEmployees ?? 0;
     int pendingCount = ViewBag.PendingCount ?? 0;
     int approvedCount = ViewBag.ApprovedCount ?? 0;
@@ -503,8 +503,8 @@
             <div class="sc-sub">All purchase records</div>
         </div>
         <div class="sc">
-            <div class="sc-label"><span class="sc-dot dot-green"></span>Total Spent</div>
-            <div class="sc-val">&#8377;@totalAmount.ToString("N0")</div>
+            <div class="sc-label"><span class="sc-dot dot-green"></span>Total Quantity</div>
+            <div class="sc-val">@totalQuantity.ToString("N0")</div>
             <div class="sc-sub">Across all records</div>
         </div>
         <div class="sc">
@@ -643,7 +643,7 @@
                         <th>PO Number</th>
                         <th>Material Code</th>
                         <th>Material Name</th>
-                        <th>Amount</th>
+                        <th>Quantity</th>
                         <th>Purchase Date</th>
                         <th>Added By</th>
                     </tr>
@@ -655,7 +655,7 @@
                             <td><strong>@po.PONumber</strong></td>
                             <td>@po.MaterialCode</td>
                             <td>@po.MaterialName</td>
-                            <td class="amt">&#8377;@po.Amount.ToString("N0")</td>
+                            <td class="amt">@po.Quantity.ToString("N0")</td>
                             <td>@po.PurchaseDate.ToString("dd MMM yyyy")</td>
                             <td>@po.AddedBy</td>
                         </tr>

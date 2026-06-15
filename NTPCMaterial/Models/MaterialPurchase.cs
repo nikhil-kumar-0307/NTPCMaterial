@@ -13,7 +13,7 @@ namespace NTPCMaterial.Models
         [Required, MaxLength(200)]
         public string MaterialName { get; set; }
         [Required]
-        public decimal Amount { get; set; }
+        public int Quantity { get; set; }
         [Required]
         public DateTime PurchaseDate { get; set; }
         public DateTime CreatedAt { get; set; }

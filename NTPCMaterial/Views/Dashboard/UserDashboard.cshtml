@@ -554,7 +554,7 @@
                             <th>Material Name</th>
                             <th>PO Number</th>
                             <th>Purchase Date</th>
-                            <th>Amount (₹)</th>
+                            <th>Quantity</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -568,7 +568,7 @@
                                     <td>@p.MaterialName</td>
                                     <td>@p.PONumber</td>
                                     <td>@p.PurchaseDate.ToString("dd MMM yyyy")</td>
-                                    <td>@p.Amount.ToString("N2")</td>
+                                    <td>@p.Quantity.ToString("N0")</td>
                                     <td>
                                         <button class="btn-request"
                                                 onclick="openModal(@p.Id, '@Html.Raw(p.MaterialCode)', '@Html.Raw(p.MaterialName)')">
