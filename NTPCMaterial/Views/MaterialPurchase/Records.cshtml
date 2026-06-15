@@ -1,0 +1,304 @@
+﻿@model List<NTPCMaterial.Models.MaterialPurchase>
+@{
+    ViewBag.Title = "Purchase Records";
+    ViewBag.Active = "PurchaseRecords";
+}
+
+@section Styles {
+    <style>
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar-left h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .topbar-left p {
+            font-size: 12px;
+            color: var(--ink3);
+            margin-top: 1px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--blue-lt);
+            color: var(--blue);
+        }
+
+        .btn-new {
+            padding: 8px 16px;
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .btn-new:hover {
+                background: #1e40af;
+            }
+
+        .content {
+            padding: 28px;
+        }
+
+        .toast {
+            background: var(--green-lt);
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 12px 18px;
+            color: var(--green);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+            max-width: 480px;
+        }
+
+        .sc {
+            background: var(--surface);
+            border-radius: 10px;
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+        }
+
+        .sc-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sc-val {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--ink);
+            margin: 4px 0 2px;
+            line-height: 1;
+        }
+
+        .tcard {
+            background: var(--surface);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .tcard-head {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .tcard-head h2 {
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 10px 16px;
+            background: #f8fafc;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--ink3);
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody td {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--ink2);
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover td {
+            background: #f8fafc;
+        }
+
+        .amt {
+            font-weight: 700;
+            color: var(--ink);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .btn-xs {
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background: var(--blue-lt);
+            color: var(--blue);
+            border-color: #bfdbfe;
+        }
+
+            .btn-edit:hover {
+                background: #bfdbfe;
+            }
+
+        .btn-del {
+            background: var(--red-lt);
+            color: var(--red);
+            border-color: #fecaca;
+        }
+
+            .btn-del:hover {
+                background: #fecaca;
+            }
+
+        .action-form {
+            display: inline;
+        }
+
+        .empty {
+            padding: 40px;
+            text-align: center;
+            color: var(--ink3);
+            font-size: 13px;
+        }
+
+            .empty span {
+                font-size: 32px;
+                display: block;
+                margin-bottom: 10px;
+            }
+    </style>
+}
+
+<div class="topbar">
+    <div class="topbar-left">
+        <h1>Purchase Records</h1>
+        <p>Materials purchased so far</p>
+    </div>
+    <div class="topbar-right">
+        <span class="pill">&#9679; Administrator</span>
+        <a class="btn-new" href="@Url.Action("Add","MaterialPurchase")">+ Add Purchase Order</a>
+    </div>
+</div>
+
+<div class="content">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="toast">&#10003; @TempData["Success"]</div>
+    }
+
+    <div class="summary">
+        <div class="sc">
+            <div class="sc-label">Total Records</div>
+            <div class="sc-val">@Model.Count</div>
+        </div>
+        <div class="sc">
+            <div class="sc-label">Total Amount Spent</div>
+            <div class="sc-val">&#8377;@Model.Sum(p => p.Amount).ToString("N0")</div>
+        </div>
+    </div>
+
+    <div class="tcard">
+        <div class="tcard-head">
+            <h2>All Purchase Records</h2>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty">
+                <span>&#128203;</span>
+                No purchase records yet. <a href="@Url.Action("Add","MaterialPurchase")">Add the first one.</a>
+            </div>
+        }
+        else
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>PO Number</th>
+                        <th>Material Code</th>
+                        <th>Material Name</th>
+                        <th>Amount</th>
+                        <th>Purchase Date</th>
+                        <th>Added By</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var po in Model)
+                    {
+                        <tr>
+                            <td><strong>@po.PONumber</strong></td>
+                            <td>@po.MaterialCode</td>
+                            <td>@po.MaterialName</td>
+                            <td class="amt">&#8377;@po.Amount.ToString("N0")</td>
+                            <td>@po.PurchaseDate.ToString("dd MMM yyyy")</td>
+                            <td>@po.AddedBy</td>
+                            <td>
+                                <a class="btn-xs btn-edit" href="@Url.Action("Edit","MaterialPurchase", new { id = po.Id })">Edit</a>
+                                <form class="action-form" action="@Url.Action("Delete","MaterialPurchase")" method="post" style="display:inline; margin-left:4px" onsubmit="return confirm('Delete this record?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@po.Id" />
+                                    <button class="btn-xs btn-del">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+</div>

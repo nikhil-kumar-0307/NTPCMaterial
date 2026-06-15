@@ -1,0 +1,222 @@
+﻿@model NTPCMaterial.Models.DTOs.MaterialPurchaseDto
+@{ ViewBag.Title = "Edit Purchase Order";
+   ViewBag.Active = "PurchaseRecords"; 
+}
+
+@section Styles {
+    <style>
+        /* same form styles as before */
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar-left h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .topbar-left p {
+            font-size: 12px;
+            color: var(--ink3);
+            margin-top: 1px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--blue-lt);
+            color: var(--blue);
+        }
+
+        .content {
+            padding: 28px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 28px;
+            width: 100%;
+            max-width: 620px;
+        }
+
+            .form-card h2 {
+                font-size: 16px;
+                font-weight: 700;
+                margin-bottom: 4px;
+            }
+
+            .form-card .desc {
+                font-size: 12px;
+                color: var(--ink3);
+                margin-bottom: 24px;
+            }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+            .form-group label {
+                display: block;
+                font-size: 12px;
+                font-weight: 700;
+                color: var(--ink2);
+                margin-bottom: 6px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 10px 12px;
+                border: 1px solid var(--border);
+                border-radius: 7px;
+                font-size: 14px;
+                color: var(--ink);
+                transition: border-color .15s;
+            }
+
+                .form-group input:focus {
+                    outline: none;
+                    border-color: var(--blue);
+                }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .field-error {
+            color: var(--red);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .validation-summary {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: var(--red);
+            border-radius: 7px;
+            padding: 10px 14px;
+            font-size: 12px;
+            margin-bottom: 16px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .btn-primary:hover {
+                background: #1e40af;
+            }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--ink2);
+            border: 1px solid var(--border);
+            padding: 10px 22px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .btn-secondary:hover {
+                background: #e2e8f0;
+            }
+    </style>
+}
+
+<div class="topbar">
+    <div class="topbar-left">
+        <h1>Edit Purchase Order</h1>
+        <p>Record a material purchase</p>
+    </div>
+    <span class="pill">&#9679; Administrator</span>
+</div>
+
+<div class="content">
+    <div class="form-card">
+        <h2>Edit Purchase Order</h2>
+        <div class="desc">Enter the details of the material you have purchased.</div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="validation-summary">
+                @Html.ValidationSummary(false, "", new { })
+            </div>
+        }
+
+        @using (Html.BeginForm("Edit", "MaterialPurchase", new { id = ViewBag.Id }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>PO Number</label>
+                    @Html.TextBoxFor(m => m.PONumber, new { placeholder = "e.g. PO-2024-001" })
+                    @Html.ValidationMessageFor(m => m.PONumber, "", new { @class = "field-error" })
+                </div>
+                <div class="form-group">
+                    <label>Purchase Date</label>
+                    @Html.TextBoxFor(m => m.PurchaseDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                    @Html.ValidationMessageFor(m => m.PurchaseDate, "", new { @class = "field-error" })
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Material Code</label>
+                    @Html.TextBoxFor(m => m.MaterialCode, new { placeholder = "e.g. MAT-001" })
+                    @Html.ValidationMessageFor(m => m.MaterialCode, "", new { @class = "field-error" })
+                </div>
+                <div class="form-group">
+                    <label>Material Name</label>
+                    @Html.TextBoxFor(m => m.MaterialName, new { placeholder = "e.g. Transformer Oil" })
+                    @Html.ValidationMessageFor(m => m.MaterialName, "", new { @class = "field-error" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Amount (₹)</label>
+                @Html.TextBoxFor(m => m.Amount, new { placeholder = "0.00", type = "number", step = "0.01" })
+                @Html.ValidationMessageFor(m => m.Amount, "", new { @class = "field-error" })
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Update Order</button>
+                <a href="@Url.Action("Records","MaterialPurchase")" class="btn-secondary">Cancel</a>
+            </div>
+        }
+    </div>
+</div>

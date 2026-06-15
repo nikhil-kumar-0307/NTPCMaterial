@@ -1,0 +1,306 @@
+﻿@using NTPCMaterial.Models
+@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.Active = "Dashboard";
+    int totalOrders = ViewBag.TotalOrders ?? 0;
+    decimal totalAmount = ViewBag.TotalAmount ?? 0;
+    int totalEmployees = ViewBag.TotalEmployees ?? 0;
+    var recentOrders = ViewBag.RecentOrders as List<MaterialPurchase> ?? new List<MaterialPurchase>();
+}
+
+@section Styles {
+    <style>
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar-left h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .topbar-left p {
+            font-size: 12px;
+            color: var(--ink3);
+            margin-top: 1px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+            .pill.admin {
+                background: var(--blue-lt);
+                color: var(--blue);
+            }
+
+        .btn-new {
+            padding: 8px 16px;
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .btn-new:hover {
+                background: #1e40af;
+            }
+
+        .content {
+            padding: 28px;
+        }
+
+        .toast {
+            background: var(--green-lt);
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 12px 18px;
+            color: var(--green);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .sc {
+            background: var(--surface);
+            border-radius: 10px;
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+        }
+
+        .sc-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sc-val {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--ink);
+            margin: 4px 0 2px;
+            line-height: 1;
+        }
+
+        .sc-sub {
+            font-size: 11px;
+            color: var(--ink3);
+        }
+
+        .sc-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        .dot-blue {
+            background: var(--blue);
+        }
+
+        .dot-green {
+            background: #22c55e;
+        }
+
+        .dot-slate {
+            background: #64748b;
+        }
+
+        .tcard {
+            background: var(--surface);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .tcard-head {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .tcard-head h2 {
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+            .tcard-head a {
+                font-size: 12px;
+                color: var(--blue);
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 10px 16px;
+            background: #f8fafc;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--ink3);
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody td {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--ink2);
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover td {
+            background: #f8fafc;
+        }
+
+        .amt {
+            font-weight: 700;
+            color: var(--ink);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .empty {
+            padding: 40px;
+            text-align: center;
+            color: var(--ink3);
+            font-size: 13px;
+        }
+
+            .empty span {
+                font-size: 32px;
+                display: block;
+                margin-bottom: 10px;
+            }
+    </style>
+}
+
+<div class="topbar">
+    <div class="topbar-left">
+        <h1>Dashboard</h1>
+        <p>@DateTime.Now.ToString("dddd, dd MMMM yyyy")</p>
+    </div>
+    <div class="topbar-right">
+        <span class="pill admin">&#9679; Administrator</span>
+        <a class="btn-new" href="@Url.Action("Create","PurchaseOrder")">+ Add Purchase Order</a>
+    </div>
+</div>
+
+<div class="content">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="toast">&#10003; @TempData["Success"]</div>
+    }
+
+    <div class="stats">
+        <div class="sc">
+            <div class="sc-label"><span class="sc-dot dot-blue"></span>Total Records</div>
+            <div class="sc-val">@totalOrders</div>
+            <div class="sc-sub">All purchase records</div>
+        </div>
+        <div class="sc">
+            <div class="sc-label"><span class="sc-dot dot-green"></span>Total Spent</div>
+            <div class="sc-val">&#8377;@totalAmount.ToString("N0")</div>
+            <div class="sc-sub">Across all records</div>
+        </div>
+        <div class="sc">
+            <div class="sc-label"><span class="sc-dot dot-slate"></span>Employees</div>
+            <div class="sc-val">@totalEmployees</div>
+            <div class="sc-sub">Registered users</div>
+        </div>
+    </div>
+
+    <div class="tcard">
+        <div class="tcard-head">
+            <h2>Recent Purchase Records</h2>
+            <a href="@Url.Action("Index","PurchaseOrder")">View all &rarr;</a>
+        </div>
+
+        @if (!recentOrders.Any())
+        {
+            <div class="empty">
+                <span>&#128203;</span>
+                No purchase records yet. <a href="@Url.Action("Create","PurchaseOrder")">Add the first one.</a>
+            </div>
+        }
+        else
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>PO Number</th>
+                        <th>Material Code</th>
+                        <th>Material Name</th>
+                        <th>Amount</th>
+                        <th>Purchase Date</th>
+                        <th>Added By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var po in recentOrders)
+                    {
+                        <tr>
+                            <td><strong>@po.PONumber</strong></td>
+                            <td>@po.MaterialCode</td>
+                            <td>@po.MaterialName</td>
+                            <td class="amt">&#8377;@po.Amount.ToString("N0")</td>
+                            <td>@po.PurchaseDate.ToString("dd MMM yyyy")</td>
+                            <td>@po.AddedBy</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+</div>
