@@ -24,7 +24,7 @@
             min-height: 100vh;
         }
 
-        /* ── Sidebar ───────────────────────────────────── */
+        /* ── Sidebar ── */
         .sidebar {
             width: 240px;
             min-height: 100vh;
@@ -138,7 +138,7 @@
                 background: rgba(255,255,255,.22);
             }
 
-        /* ── Main ──────────────────────────────────────── */
+        /* ── Main ── */
         .main {
             margin-left: 240px;
             flex: 1;
@@ -173,7 +173,7 @@
             padding: 32px;
         }
 
-        /* ── Alert ─────────────────────────────────────── */
+        /* ── Alert ── */
         .alert-success {
             background: #dcfce7;
             color: #15803d;
@@ -184,7 +184,7 @@
             font-size: 13.5px;
         }
 
-        /* ── Stats ─────────────────────────────────────── */
+        /* ── Stats ── */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4,1fr);
@@ -236,7 +236,7 @@
             color: #9aa3bb;
         }
 
-        /* ── Card box ───────────────────────────────────── */
+        /* ── Card box ── */
         .card-box {
             background: #fff;
             border-radius: 12px;
@@ -263,7 +263,17 @@
                 color: #6b7a99;
             }
 
-        /* ── Table ─────────────────────────────────────── */
+            .card-box-header a {
+                font-size: 12px;
+                color: #0055b3;
+                text-decoration: none;
+            }
+
+                .card-box-header a:hover {
+                    text-decoration: underline;
+                }
+
+        /* ── Table ── */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -291,7 +301,7 @@
             background: #f8faff;
         }
 
-        /* ── Status badges ─────────────────────────────── */
+        /* ── Status badges ── */
         .status {
             display: inline-block;
             padding: 3px 10px;
@@ -315,7 +325,7 @@
                 color: #dc2626;
             }
 
-        /* ── "Request" button in catalogue table ─────── */
+        /* ── "Request" button ── */
         .btn-request {
             display: inline-flex;
             align-items: center;
@@ -336,7 +346,29 @@
                 background: #065f46;
             }
 
-        /* ── Modal overlay ─────────────────────────────── */
+        /* ── View-all strip ── */
+        .view-all-strip {
+            padding: 13px 18px;
+            background: #f8faff;
+            border-top: 1px solid #e8ecf4;
+            text-align: center;
+        }
+
+            .view-all-strip a {
+                font-size: 13px;
+                font-weight: 600;
+                color: #064e3b;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+                .view-all-strip a:hover {
+                    text-decoration: underline;
+                }
+
+        /* ── Modal overlay ── */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -434,12 +466,6 @@
             gap: 14px;
         }
 
-        .validation-msg {
-            color: #dc2626;
-            font-size: 11.5px;
-            margin-top: 4px;
-        }
-
         .modal-footer {
             padding: 16px 24px;
             border-top: 1px solid #e8ecf4;
@@ -491,6 +517,9 @@
             <a class="nav-item" href="@Url.Action("MyRequests","MaterialRequest")">
                 <span class="icon">&#128203;</span> My Requests
             </a>
+            <a class="nav-item" href="@Url.Action("Index","AvailableMaterials")">
+                <span class="icon">&#128230;</span> Available Materials
+            </a>
         </div>
         <div class="sidebar-footer">
             <div class="emp-info">
@@ -541,11 +570,11 @@
                 </div>
             </div>
 
-            <!-- ── Available Materials / Purchase Catalogue ── -->
+            <!-- ── Recently Added Materials (top 5 preview) ── -->
             <div class="card-box">
                 <div class="card-box-header">
-                    <h3>&#128230; Available Materials</h3>
-                    <span>Click "Request" to raise a material request</span>
+                    <h3>&#128230; Recently Added Materials</h3>
+                    <a href="@Url.Action("AvailableMaterials","MaterialRequest")">View all materials →</a>
                 </div>
                 <table>
                     <thead>
@@ -554,14 +583,17 @@
                             <th>Material Name</th>
                             <th>PO Number</th>
                             <th>Purchase Date</th>
-                            <th>Quantity</th>
+                            <th>Qty</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model.Purchases.Any())
+                        @{
+                            var top5 = Model.Purchases.Take(5).ToList();
+                        }
+                        @if (top5.Any())
                         {
-                            foreach (var p in Model.Purchases)
+                            foreach (var p in top5)
                             {
                                 <tr>
                                     <td><strong>@p.MaterialCode</strong></td>
@@ -580,17 +612,25 @@
                         }
                         else
                         {
-                            <tr><td colspan="6" style="text-align:center;padding:24px;color:#9aa3bb;">No materials available in the catalogue.</td></tr>
+                            <tr><td colspan="6" style="text-align:center;padding:24px;color:#9aa3bb;">No materials available yet.</td></tr>
                         }
                     </tbody>
                 </table>
+                @if (Model.Purchases.Count() > 5)
+                {
+                    <div class="view-all-strip">
+                        <a href="@Url.Action("AvailableMaterials","MaterialRequest")">
+                            &#128230; View all @Model.Purchases.Count() materials in catalogue
+                        </a>
+                    </div>
+                }
             </div>
 
             <!-- ── My Recent Requests ── -->
             <div class="card-box">
                 <div class="card-box-header">
                     <h3>&#128203; My Recent Requests</h3>
-                    <a href="@Url.Action("MyRequests","MaterialRequest")" style="font-size:12px;color:#0055b3;text-decoration:none;">View all →</a>
+                    <a href="@Url.Action("MyRequests","MaterialRequest")">View all →</a>
                 </div>
                 <table>
                     <thead>
@@ -614,15 +654,13 @@
                                     <td>@r.QuantityRequested</td>
                                     <td>@r.Department</td>
                                     <td>@r.RequiredByDate.ToString("dd MMM yyyy")</td>
-                                    <td>
-                                        <span class="status @r.Status.ToLower()">@r.Status</span>
-                                    </td>
+                                    <td><span class="status @r.Status.ToLower()">@r.Status</span></td>
                                 </tr>
                             }
                         }
                         else
                         {
-                            <tr><td colspan="6" style="text-align:center;padding:24px;color:#9aa3bb;">No requests yet. Use the catalogue above to raise your first request.</td></tr>
+                            <tr><td colspan="6" style="text-align:center;padding:24px;color:#9aa3bb;">No requests yet. Use the catalogue to raise your first request.</td></tr>
                         }
                     </tbody>
                 </table>
@@ -642,17 +680,12 @@
             @using (Html.BeginForm("Create", "MaterialRequest", FormMethod.Post, new { id = "requestForm" }))
             {
                 @Html.AntiForgeryToken()
-
                 <div class="modal-body">
-
-                    <!-- Hidden: selected purchase -->
                     <input type="hidden" name="MaterialPurchaseId" id="hidPurchaseId" />
-
                     <div class="form-row">
                         <label>Selected Material</label>
                         <div class="field-info" id="lblMaterial">—</div>
                     </div>
-
                     <div class="form-row-2col">
                         <div class="form-row">
                             <label>Quantity Required <span style="color:#dc2626">*</span></label>
@@ -663,7 +696,6 @@
                             <input type="date" name="RequiredByDate" id="inpDate" required />
                         </div>
                     </div>
-
                     <div class="form-row">
                         <label>Department <span style="color:#dc2626">*</span></label>
                         <select name="Department" id="selDept" required>
@@ -681,14 +713,11 @@
                             <option>Projects</option>
                         </select>
                     </div>
-
                     <div class="form-row">
                         <label>Remarks (optional)</label>
                         <textarea name="Remarks" placeholder="Add any notes or justification…"></textarea>
                     </div>
-
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
                     <button type="submit" class="btn-submit">&#128203; Submit Request</button>
@@ -698,41 +727,38 @@
     </div>
 
     <script>
-    // Set min date for required-by field to tomorrow
-    (function () {
-        var tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        document.getElementById('inpDate').min = tomorrow.toISOString().split('T')[0];
-        document.getElementById('inpDate').value = new Date(Date.now() + 7 * 864e5).toISOString().split('T')[0];
-    })();
+        (function () {
+            var tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('inpDate').min = tomorrow.toISOString().split('T')[0];
+            document.getElementById('inpDate').value = new Date(Date.now() + 7 * 864e5).toISOString().split('T')[0];
+        })();
 
-    function openModal(purchaseId, code, name) {
-        document.getElementById('hidPurchaseId').value = purchaseId;
-        document.getElementById('lblMaterial').textContent = code + ' — ' + name;
-        document.getElementById('inpQty').value = '';
-        document.getElementById('selDept').value = '';
-        document.getElementById('requestModal').classList.add('open');
-    }
-
-    function closeModal() {
-        document.getElementById('requestModal').classList.remove('open');
-    }
-
-    // Close on backdrop click
-    document.getElementById('requestModal').addEventListener('click', function (e) {
-        if (e.target === this) closeModal();
-    });
-
-    // Basic client-side validation before submit
-    document.getElementById('requestForm').addEventListener('submit', function (e) {
-        var qty  = parseInt(document.getElementById('inpQty').value, 10);
-        var dept = document.getElementById('selDept').value;
-        var date = document.getElementById('inpDate').value;
-        if (!qty || qty < 1 || !dept || !date) {
-            e.preventDefault();
-            alert('Please fill in all required fields.');
+        function openModal(purchaseId, code, name) {
+            document.getElementById('hidPurchaseId').value = purchaseId;
+            document.getElementById('lblMaterial').textContent = code + ' — ' + name;
+            document.getElementById('inpQty').value = '';
+            document.getElementById('selDept').value = '';
+            document.getElementById('requestModal').classList.add('open');
         }
-    });
+
+        function closeModal() {
+            document.getElementById('requestModal').classList.remove('open');
+        }
+
+        document.getElementById('requestModal').addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.getElementById('requestForm').addEventListener('submit', function (e) {
+            var qty = parseInt(document.getElementById('inpQty').value, 10);
+            var dept = document.getElementById('selDept').value;
+            var date = document.getElementById('inpDate').value;
+            if (!qty || qty < 1 || !dept || !date) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
     </script>
 </body>
 </html>
