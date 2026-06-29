@@ -6,154 +6,403 @@
 
 @section Styles {
     <style>
-        /* same form styles as before */
         .topbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 16px 28px;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 14px 28px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
         .topbar-left h1 {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
-            color: var(--ink);
+            color: #1e293b;
         }
 
         .topbar-left p {
             font-size: 12px;
-            color: var(--ink3);
+            color: #94a3b8;
             margin-top: 1px;
         }
 
-        .pill {
+        .admin-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 5px 12px;
+            padding: 5px 13px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            background: var(--blue-lt);
-            color: var(--blue);
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
         }
 
-        .content {
+            .admin-pill .dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: #2563eb;
+            }
+
+        .body {
             padding: 28px;
             display: flex;
-            justify-content: center;
+            gap: 20px;
+            align-items: flex-start;
+            background: #f4f6fb;
+            min-height: calc(100vh - 61px);
         }
 
-        .form-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
+        /* Form Panel */
+        .form-panel {
+            flex: 1;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .form-panel-header {
+            padding: 20px 24px 18px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .form-header-icon {
+            width: 42px;
+            height: 42px;
             border-radius: 10px;
-            padding: 28px;
-            width: 100%;
-            max-width: 620px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
         }
 
-            .form-card h2 {
-                font-size: 16px;
-                font-weight: 700;
-                margin-bottom: 4px;
-            }
-
-            .form-card .desc {
-                font-size: 12px;
-                color: var(--ink3);
-                margin-bottom: 24px;
-            }
-
-        .form-group {
-            margin-bottom: 18px;
+        .form-header-text h2 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
         }
 
-            .form-group label {
-                display: block;
-                font-size: 12px;
-                font-weight: 700;
-                color: var(--ink2);
-                margin-bottom: 6px;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
+        .form-header-text p {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 1px;
+        }
+
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 0 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
+            position: relative;
+        }
+
+            .step + .step {
+                margin-left: 24px;
             }
 
-            .form-group input {
-                width: 100%;
-                padding: 10px 12px;
-                border: 1px solid var(--border);
-                border-radius: 7px;
-                font-size: 14px;
-                color: var(--ink);
-                transition: border-color .15s;
-            }
-
-                .form-group input:focus {
-                    outline: none;
-                    border-color: var(--blue);
+                .step + .step::before {
+                    content: '';
+                    position: absolute;
+                    left: -16px;
+                    top: 50%;
+                    width: 8px;
+                    height: 1px;
+                    background: #e2e8f0;
                 }
 
-        .form-row {
+        .step-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            background: #ea580c;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .step.pending .step-num {
+            background: #e2e8f0;
+            color: #94a3b8;
+        }
+
+        .step-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .step.pending .step-label {
+            color: #94a3b8;
+        }
+
+        .form-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .section-title::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: #f1f5f9;
+            }
+
+        .field-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 14px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+            .field-group.full {
+                grid-column: 1 / -1;
+            }
+
+        .field-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field-input-wrap {
+            position: relative;
+        }
+
+            .field-input-wrap .fi {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 15px;
+                color: #94a3b8;
+                pointer-events: none;
+            }
+
+        .field-input {
+            width: 100%;
+            padding: 9px 12px 9px 34px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #1e293b;
+            background: #f8fafc;
+            transition: all .15s;
+        }
+
+            .field-input:focus {
+                outline: none;
+                border-color: #ea580c;
+                background: #fff;
+                box-shadow: 0 0 0 3px #fff7ed;
+            }
+
+        .field-hint {
+            font-size: 11px;
+            color: #94a3b8;
         }
 
         .field-error {
-            color: var(--red);
             font-size: 11px;
-            margin-top: 4px;
+            color: #ef4444;
         }
 
-        .validation-summary {
-            background: #fee2e2;
-            border: 1px solid #fecaca;
-            color: var(--red);
-            border-radius: 7px;
-            padding: 10px 14px;
-            font-size: 12px;
-            margin-bottom: 16px;
-        }
-
-        .form-actions {
+        .qty-wrap {
             display: flex;
-            gap: 10px;
-            margin-top: 24px;
         }
 
-        .btn-primary {
-            background: var(--blue);
-            color: #fff;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 7px;
-            font-size: 13px;
-            font-weight: 600;
+        .qty-btn {
+            width: 36px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 18px;
+            color: #64748b;
             cursor: pointer;
-            text-decoration: none;
         }
 
-            .btn-primary:hover {
-                background: #1e40af;
+            .qty-btn:first-child {
+                border-radius: 8px 0 0 8px;
+                border-right: none;
             }
 
-        .btn-secondary {
-            background: #f1f5f9;
-            color: var(--ink2);
-            border: 1px solid var(--border);
-            padding: 10px 22px;
-            border-radius: 7px;
+            .qty-btn:last-child {
+                border-radius: 0 8px 8px 0;
+                border-left: none;
+            }
+
+        .qty-input {
+            flex: 1;
+            padding: 9px 12px;
+            border: 1px solid #e2e8f0;
+            border-left: none;
+            border-right: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+            background: #fff;
+            text-align: center;
+        }
+
+            .qty-input:focus {
+                outline: none;
+            }
+
+        .form-footer {
+            padding: 16px 24px;
+            background: #f8fafc;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-note {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .form-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-save {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 20px;
+            background: #ea580c;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .btn-save:hover {
+                background: #c2410c;
+            }
+
+        .btn-cancel {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 16px;
+            background: #fff;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
         }
 
-            .btn-secondary:hover {
-                background: #e2e8f0;
+        /* Side Panel */
+        .side-panel {
+            width: 220px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .info-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .info-card-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .info-row {
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+            .info-row:last-child {
+                border-bottom: none;
+            }
+
+            .info-row .lbl {
+                font-size: 10px;
+                font-weight: 600;
+                color: #94a3b8;
+                text-transform: uppercase;
+            }
+
+            .info-row .val {
+                font-size: 13px;
+                font-weight: 600;
+                color: #1e293b;
+            }
+
+        .tip-card {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+
+            .tip-card p {
+                font-size: 11px;
+                color: #c2410c;
+                line-height: 1.6;
+            }
+
+            .tip-card strong {
+                display: block;
+                font-size: 12px;
+                color: #9a3412;
+                margin-bottom: 6px;
             }
     </style>
 }
@@ -163,61 +412,102 @@
         <h1>Add Purchase Order</h1>
         <p>Record a material purchase</p>
     </div>
-    <span class="pill">&#9679; Administrator</span>
+    <span class="admin-pill"><span class="dot"></span> Administrator</span>
 </div>
 
-<div class="content">
-    <div class="form-card">
-        <h2>New Purchase Order</h2>
-        <div class="desc">Enter the details of the material you have purchased.</div>
-
-        @if (!ViewData.ModelState.IsValid)
-        {
-            <div class="validation-summary">
-                @Html.ValidationSummary(false, "", new { })
+<div class="body">
+    <div class="form-panel">
+        <div class="form-panel-header">
+            <div class="form-header-icon">&#128722;</div>
+            <div class="form-header-text">
+                <h2>New Purchase Order</h2>
+                <p>Enter the details of the material you have purchased.</p>
             </div>
-        }
+        </div>
+
+        <div class="step-indicator">
+            <div class="step"><div class="step-num">&#10003;</div><span class="step-label">Order Info</span></div>
+            <div class="step"><div class="step-num">2</div><span class="step-label">Material Details</span></div>
+            <div class="step pending"><div class="step-num">3</div><span class="step-label">Review &amp; Save</span></div>
+        </div>
 
         @using (Html.BeginForm("Add", "MaterialPurchase", FormMethod.Post))
         {
             @Html.AntiForgeryToken()
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>PO Number</label>
-                    @Html.TextBoxFor(m => m.PONumber, new { placeholder = "e.g. PO-2024-001" })
-                    @Html.ValidationMessageFor(m => m.PONumber, "", new { @class = "field-error" })
+            <div class="form-body">
+                <div>
+                    <div class="section-title">Order information</div>
+                    <div class="field-grid">
+                        <div class="field-group">
+                            <label class="field-label">PO Number</label>
+                            <div class="field-input-wrap">
+                                <span class="fi">#</span>
+                                @Html.TextBoxFor(m => m.PONumber, new { @class = "field-input", placeholder = "e.g. PO-2024-001" })
+                            </div>
+                            <span class="field-hint">Must be unique per document</span>
+                            @Html.ValidationMessageFor(m => m.PONumber, "", new { @class = "field-error" })
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Purchase Date</label>
+                            <div class="field-input-wrap">
+                                <span class="fi">&#128197;</span>
+                                @Html.TextBoxFor(m => m.PurchaseDate, "{0:yyyy-MM-dd}", new { @class = "field-input", type = "date" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.PurchaseDate, "", new { @class = "field-error" })
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Purchase Date</label>
-                    @Html.TextBoxFor(m => m.PurchaseDate, "{0:yyyy-MM-dd}", new { type = "date" })
-                    @Html.ValidationMessageFor(m => m.PurchaseDate, "", new { @class = "field-error" })
+
+                <div>
+                    <div class="section-title">Material details</div>
+                    <div class="field-grid">
+                        <div class="field-group">
+                            <label class="field-label">Material Code</label>
+                            <div class="field-input-wrap">
+                                @Html.TextBoxFor(m => m.MaterialCode, new { @class = "field-input", placeholder = "e.g. MAT-001" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.MaterialCode, "", new { @class = "field-error" })
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Material Name</label>
+                            <div class="field-input-wrap">
+                                @Html.TextBoxFor(m => m.MaterialName, new { @class = "field-input", placeholder = "e.g. Transformer Oil" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.MaterialName, "", new { @class = "field-error" })
+                        </div>
+                        <div class="field-group full">
+                            <label class="field-label">Quantity</label>
+                            <div class="qty-wrap">
+                                <button type="button" class="qty-btn" onclick="var i=document.getElementById('qty');i.value=Math.max(1,+i.value-1)">&#8722;</button>
+                                @Html.TextBoxFor(m => m.Quantity, new { @class = "qty-input", id = "qty", type = "number", min = "1" })
+                                <button type="button" class="qty-btn" onclick="var i=document.getElementById('qty');i.value=+i.value+1">&#43;</button>
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Quantity, "", new { @class = "field-error" })
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Material Code</label>
-                    @Html.TextBoxFor(m => m.MaterialCode, new { placeholder = "e.g. MAT-001" })
-                    @Html.ValidationMessageFor(m => m.MaterialCode, "", new { @class = "field-error" })
+            <div class="form-footer">
+                <span class="footer-note">&#9888; Records cannot be deleted after saving</span>
+                <div class="form-btns">
+                    <a href="@Url.Action("Records","MaterialPurchase")" class="btn-cancel">Cancel</a>
+                    <button type="submit" class="btn-save">&#128190; Save Order</button>
                 </div>
-                <div class="form-group">
-                    <label>Material Name</label>
-                    @Html.TextBoxFor(m => m.MaterialName, new { placeholder = "e.g. Transformer Oil" })
-                    @Html.ValidationMessageFor(m => m.MaterialName, "", new { @class = "field-error" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Quantity</label>
-                @Html.TextBoxFor(m => m.Quantity, new { placeholder = "e.g. 10", type = "number", min = "1" })
-                @Html.ValidationMessageFor(m => m.Quantity, "", new { @class = "field-error" })
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn-primary">Save Order</button>
-                <a href="@Url.Action("Records","MaterialPurchase")" class="btn-secondary">Cancel</a>
             </div>
         }
+    </div>
+
+    <div class="side-panel">
+        <div class="info-card">
+            <div class="info-card-title">&#128202; Quick Stats</div>
+            <div class="info-row"><div class="lbl">Total Records</div><div class="val">@ViewBag.TotalRecords</div></div>
+            <div class="info-row"><div class="lbl">This Month</div><div class="val">@ViewBag.MonthCount orders</div></div>
+        </div>
+        <div class="tip-card">
+            <strong>&#9432; Before you save</strong>
+            <p>Ensure the PO number matches the physical document. Use Edit to correct mistakes after submission.</p>
+        </div>
     </div>
 </div>

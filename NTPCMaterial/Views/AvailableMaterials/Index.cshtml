@@ -1,0 +1,800 @@
+﻿@{
+    Layout = null;
+    string empNo = Session["EmployeeNumber"]?.ToString() ?? "User";
+}
+@model NTPCMaterial.Models.DTOs.AvailableMaterialsViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Available Materials — NTPC Material</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f4fa;
+            color: #0a1628;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 240px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #064e3b 0%, #065f46 100%);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+        }
+
+        .sidebar-brand {
+            padding: 28px 24px 24px;
+            border-bottom: 1px solid rgba(255,255,255,.12);
+        }
+
+            .sidebar-brand .logo {
+                width: 44px;
+                height: 44px;
+                background: #fff;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px;
+                font-weight: 800;
+                color: #064e3b;
+                margin-bottom: 12px;
+            }
+
+            .sidebar-brand h2 {
+                color: #fff;
+                font-size: 14px;
+                font-weight: 700;
+                line-height: 1.4;
+            }
+
+            .sidebar-brand p {
+                color: rgba(255,255,255,.55);
+                font-size: 11px;
+                margin-top: 3px;
+            }
+
+        .nav-section {
+            padding: 20px 0 8px;
+        }
+
+        .nav-label {
+            padding: 0 20px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(255,255,255,.4);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 20px;
+            color: rgba(255,255,255,.75);
+            font-size: 13.5px;
+            cursor: pointer;
+            transition: background .15s;
+            text-decoration: none;
+        }
+
+            .nav-item:hover, .nav-item.active {
+                background: rgba(255,255,255,.12);
+                color: #fff;
+            }
+
+            .nav-item .icon {
+                font-size: 17px;
+                width: 22px;
+                text-align: center;
+            }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,.12);
+        }
+
+            .sidebar-footer .emp-info {
+                color: rgba(255,255,255,.7);
+                font-size: 12px;
+                margin-bottom: 12px;
+            }
+
+                .sidebar-footer .emp-info strong {
+                    color: #fff;
+                    display: block;
+                    font-size: 13px;
+                }
+
+        .btn-logout {
+            width: 100%;
+            padding: 9px;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 7px;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+            .btn-logout:hover {
+                background: rgba(255,255,255,.22);
+            }
+
+        /* ── Main ── */
+        .main {
+            margin-left: 240px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: #fff;
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e7f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar-left .breadcrumb {
+            font-size: 12px;
+            color: #9aa3bb;
+            margin-bottom: 4px;
+        }
+
+            .topbar-left .breadcrumb a {
+                color: #0055b3;
+                text-decoration: none;
+            }
+
+        .topbar-left h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .badge-user {
+            background: #dcfce7;
+            color: #16a34a;
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        /* ── Alert ── */
+        .alert-success {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 12px 18px;
+            margin-bottom: 24px;
+            font-size: 13.5px;
+        }
+
+        /* ── Toolbar ── */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            max-width: 360px;
+        }
+
+            .search-wrap input {
+                width: 100%;
+                padding: 9px 12px 9px 38px;
+                border: 1.5px solid #dde3ee;
+                border-radius: 8px;
+                font-size: 13.5px;
+                color: #0a1628;
+                background: #fff;
+                outline: none;
+                transition: border-color .15s;
+            }
+
+                .search-wrap input:focus {
+                    border-color: #0d9488;
+                }
+
+            .search-wrap .search-icon {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 14px;
+                color: #9aa3bb;
+                pointer-events: none;
+            }
+
+        .total-badge {
+            background: #e8f4fd;
+            color: #0055b3;
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* ── Table card ── */
+        .card-box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,53,128,.07);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 13px 18px;
+            background: #f8faff;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #6b7a99;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 14px 18px;
+            font-size: 13.5px;
+            color: #374060;
+            border-top: 1px solid #f0f4fa;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #f8faff;
+        }
+
+        .material-name {
+            font-weight: 600;
+            color: #0a1628;
+            display: block;
+        }
+
+        .material-code {
+            font-size: 11.5px;
+            color: #9aa3bb;
+            margin-top: 2px;
+        }
+
+        .qty-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            background: #e8f4fd;
+            color: #0055b3;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+            .qty-pill.low {
+                background: #fff7ed;
+                color: #ea580c;
+            }
+
+        .btn-request {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 15px;
+            background: #064e3b;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .15s;
+            white-space: nowrap;
+        }
+
+            .btn-request:hover {
+                background: #047857;
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 56px 24px;
+            color: #9aa3bb;
+        }
+
+            .empty-state .icon {
+                font-size: 40px;
+                display: block;
+                margin-bottom: 12px;
+            }
+
+            .empty-state p {
+                font-size: 14px;
+            }
+
+        /* ── Pagination ── */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-top: 1px solid #e8ecf4;
+            background: #fff;
+        }
+
+        .page-info {
+            font-size: 12px;
+            color: #6b7a99;
+        }
+
+        .page-btns {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .page-btn {
+            padding: 6px 12px;
+            border: 1.5px solid #dde3ee;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374060;
+            background: #fff;
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+            .page-btn:hover:not(:disabled) {
+                border-color: #064e3b;
+                color: #064e3b;
+            }
+
+            .page-btn.active {
+                background: #064e3b;
+                color: #fff;
+                border-color: #064e3b;
+            }
+
+            .page-btn:disabled {
+                opacity: .4;
+                cursor: default;
+            }
+
+        .page-ellipsis {
+            padding: 0 4px;
+            color: #9aa3bb;
+            font-size: 13px;
+        }
+
+        /* ── Modal ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10,22,40,.45);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .modal-overlay.open {
+                display: flex;
+            }
+
+        .modal {
+            background: #fff;
+            border-radius: 14px;
+            width: 520px;
+            max-width: 95vw;
+            box-shadow: 0 16px 48px rgba(0,0,0,.18);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            background: #064e3b;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .modal-header h3 {
+                font-size: 15px;
+                font-weight: 700;
+            }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,.8);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-row {
+            margin-bottom: 18px;
+        }
+
+            .form-row label {
+                display: block;
+                font-size: 12px;
+                font-weight: 700;
+                color: #374060;
+                margin-bottom: 6px;
+            }
+
+            .form-row .field-info {
+                background: #f0f4fa;
+                border-radius: 7px;
+                padding: 9px 12px;
+                font-size: 13.5px;
+                color: #0a1628;
+            }
+
+            .form-row input, .form-row select, .form-row textarea {
+                width: 100%;
+                padding: 9px 12px;
+                border: 1.5px solid #dde3ee;
+                border-radius: 7px;
+                font-size: 13.5px;
+                color: #0a1628;
+                background: #fff;
+                outline: none;
+                transition: border-color .15s;
+            }
+
+                .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+                    border-color: #0d9488;
+                }
+
+            .form-row textarea {
+                resize: vertical;
+                min-height: 72px;
+            }
+
+        .form-row-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e8ecf4;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cancel {
+            padding: 9px 20px;
+            background: #f0f4fa;
+            border: 1px solid #dde3ee;
+            border-radius: 7px;
+            font-size: 13px;
+            color: #374060;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            padding: 9px 22px;
+            background: #064e3b;
+            border: none;
+            border-radius: 7px;
+            font-size: 13px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .btn-submit:hover {
+                background: #065f46;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <div class="logo">NTPC</div>
+            <h2>Material Management</h2>
+            <p>Employee Portal</p>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Main</div>
+            <a class="nav-item" href="@Url.Action("UserDashboard","Dashboard")">
+                <span class="icon">&#128202;</span> Dashboard
+            </a>
+            <a class="nav-item" href="@Url.Action("MyRequests","MaterialRequest")">
+                <span class="icon">&#128203;</span> My Requests
+            </a>
+            <a class="nav-item active" href="@Url.Action("Index","AvailableMaterials")">
+                <span class="icon">&#128230;</span> Available Materials
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <div class="emp-info">
+                <strong>@empNo</strong>Employee
+            </div>
+            <form action="@Url.Action("Logout","Account")" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn-logout">&#128274; Sign Out</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <div class="breadcrumb">
+                    <a href="@Url.Action("UserDashboard","Dashboard")">Dashboard</a> &rsaquo; Available Materials
+                </div>
+                <h1>Available Materials</h1>
+            </div>
+            <span class="badge-user">&#9679; Employee &mdash; @empNo</span>
+        </div>
+
+        <div class="content">
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert-success">&#10003; @TempData["Success"]</div>
+            }
+
+            <div class="toolbar">
+                <div class="search-wrap">
+                    <span class="search-icon">&#128269;</span>
+                    <input type="text" id="searchInput"
+                           placeholder="Search by name, code or PO number..."
+                           oninput="filterTable()" />
+                </div>
+                <span class="total-badge" id="countBadge">
+                    @Model.TotalCount item@(Model.TotalCount != 1 ? "s" : "") in catalogue
+                </span>
+            </div>
+
+            <div class="card-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Material</th>
+                            <th>PO Number</th>
+                            <th>Purchase Date</th>
+                            <th>Quantity</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        @if (Model.Materials.Any())
+                        {
+                            int i = 1;
+                            foreach (var m in Model.Materials)
+                            {
+                                <tr data-search="@((m.MaterialCode + " " + m.MaterialName + " " + m.PONumber).ToLower())">
+                                    <td style="color:#9aa3bb;font-size:12px;">@i</td>
+                                    <td>
+                                        <span class="material-name">@m.MaterialName</span>
+                                        <span class="material-code">@m.MaterialCode</span>
+                                    </td>
+                                    <td>@m.PONumber</td>
+                                    <td>@m.PurchaseDate.ToString("dd MMM yyyy")</td>
+                                    <td>
+                                        <span class="qty-pill @(m.IsLowStock ? "low" : "")">
+                                            @m.Quantity.ToString("N0") @(m.IsLowStock ? "⚠" : "")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn-request"
+                                                onclick="openModal(@(m.Id), '@Html.Raw(m.MaterialCode)', '@Html.Raw(m.MaterialName)')">
+                                            &#43; Request
+                                        </button>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <div class="empty-state" id="emptyState" style="display:none;">
+                    <span class="icon">&#128230;</span>
+                    <p>No materials match your search.</p>
+                </div>
+
+                <div class="pagination" id="paginationBar">
+                    <span class="page-info" id="pageInfo"></span>
+                    <div class="page-btns" id="pageBtns"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- REQUEST MODAL -->
+    <div class="modal-overlay" id="requestModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>&#128203; Raise Material Request</h3>
+                <button class="modal-close" onclick="closeModal()">&#10005;</button>
+            </div>
+            @using (Html.BeginForm("Create", "MaterialRequest", FormMethod.Post, new { id = "requestForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <input type="hidden" name="MaterialPurchaseId" id="hidPurchaseId" />
+                    <div class="form-row">
+                        <label>Selected Material</label>
+                        <div class="field-info" id="lblMaterial">-</div>
+                    </div>
+                    <div class="form-row-2col">
+                        <div class="form-row">
+                            <label>Quantity Required <span style="color:#dc2626">*</span></label>
+                            <input type="number" name="QuantityRequested" id="inpQty" min="1" placeholder="e.g. 10" required />
+                        </div>
+                        <div class="form-row">
+                            <label>Required By Date <span style="color:#dc2626">*</span></label>
+                            <input type="date" name="RequiredByDate" id="inpDate" required />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label>Department <span style="color:#dc2626">*</span></label>
+                        <select name="Department" id="selDept" required>
+                            <option value="">- Select Department -</option>
+                            <option>Operations</option>
+                            <option>Maintenance</option>
+                            <option>Electrical</option>
+                            <option>Civil</option>
+                            <option>Instrumentation</option>
+                            <option>Safety &amp; Environment</option>
+                            <option>IT</option>
+                            <option>Finance</option>
+                            <option>HR</option>
+                            <option>Stores</option>
+                            <option>Projects</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label>Remarks (optional)</label>
+                        <textarea name="Remarks" placeholder="Add any notes or justification..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-submit">&#128203; Submit Request</button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var t = new Date(); t.setDate(t.getDate() + 1);
+            document.getElementById('inpDate').min = t.toISOString().split('T')[0];
+            document.getElementById('inpDate').value = new Date(Date.now() + 7 * 864e5).toISOString().split('T')[0];
+        })();
+
+        function openModal(id, code, name) {
+            document.getElementById('hidPurchaseId').value = id;
+            document.getElementById('lblMaterial').textContent = code + ' - ' + name;
+            document.getElementById('inpQty').value = '';
+            document.getElementById('selDept').value = '';
+            document.getElementById('requestModal').classList.add('open');
+        }
+        function closeModal() { document.getElementById('requestModal').classList.remove('open'); }
+        document.getElementById('requestModal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
+        document.getElementById('requestForm').addEventListener('submit', function (e) {
+            if (!document.getElementById('inpQty').value ||
+                !document.getElementById('selDept').value ||
+                !document.getElementById('inpDate').value) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
+
+        var PAGE_SIZE = 15;
+        var currentPage = 1;
+        var allRows = Array.from(document.querySelectorAll('#tableBody tr'));
+        var visibleRows = allRows.slice();
+
+        function filterTable() {
+            var q = document.getElementById('searchInput').value.toLowerCase().trim();
+            visibleRows = q
+                ? allRows.filter(function (r) { return r.dataset.search.includes(q); })
+                : allRows.slice();
+            currentPage = 1;
+            renderPage();
+        }
+
+        function renderPage() {
+            var total = visibleRows.length;
+            var totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+            var start = (currentPage - 1) * PAGE_SIZE;
+            var end   = Math.min(start + PAGE_SIZE, total);
+
+            allRows.forEach(function (r) { r.style.display = 'none'; });
+            for (var i = start; i < end; i++) { visibleRows[i].style.display = ''; }
+            visibleRows.forEach(function (r, idx) { r.cells[0].textContent = idx + 1; });
+
+            document.getElementById('emptyState').style.display    = total === 0 ? 'block' : 'none';
+            document.getElementById('paginationBar').style.display = total === 0 ? 'none'  : 'flex';
+            document.getElementById('countBadge').textContent = total + ' item' + (total !== 1 ? 's' : '') + ' in catalogue';
+            document.getElementById('pageInfo').textContent = 'Showing ' + (total === 0 ? 0 : start + 1) + '-' + end + ' of ' + total;
+
+            var btns = document.getElementById('pageBtns');
+            btns.innerHTML = '';
+
+            function btn(label, page, disabled, active) {
+                var b = document.createElement('button');
+                b.className = 'page-btn' + (active ? ' active' : '');
+                b.innerHTML = label; b.disabled = disabled;
+                b.onclick = function () { currentPage = page; renderPage(); };
+                btns.appendChild(b);
+            }
+            function ellipsis() {
+                var s = document.createElement('span');
+                s.className = 'page-ellipsis'; s.textContent = '...';
+                btns.appendChild(s);
+            }
+
+            btn('&lsaquo; Prev', currentPage - 1, currentPage === 1, false);
+            var lo = Math.max(1, currentPage - 3);
+            var hi = Math.min(totalPages, lo + 6);
+            lo = Math.max(1, hi - 6);
+            if (lo > 1) { btn(1, 1, false, false); if (lo > 2) ellipsis(); }
+            for (var p = lo; p <= hi; p++) btn(p, p, false, p === currentPage);
+            if (hi < totalPages) { if (hi < totalPages - 1) ellipsis(); btn(totalPages, totalPages, false, false); }
+            btn('Next &rsaquo;', currentPage + 1, currentPage === totalPages, false);
+        }
+
+        renderPage();
+    </script>
+</body>
+</html>
